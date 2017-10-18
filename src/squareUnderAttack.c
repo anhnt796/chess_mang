@@ -4,17 +4,17 @@
 
 extern int checkPosition(int row, int col, int b[][8]);
 
-int attackedByPawn(int, int, int, int, int);
+int attackedByPawn(int colPawn, int rowPawn, int colSquare, int rowSquare, int player);
 
-int attackedByKnight(int, int, int, int);
+int attackedByKnight(int colKnight, int rowKnight, int colSquare, int rowSquare);
 
-int attackedByBishop(int, int, int, int, int, int[][8]);
+int attackedByBishop(int colBishop, int rowBishop, int colSquare, int rowSquare, int player, int board[][8]);
 
-int attackedByRook(int, int, int, int, int, int[][8]);
+int attackedByRook(int colRook, int rowRook, int colSquare, int rowSquare, int player, int board[][8]);
 
-int attackedByQueen(int, int, int, int, int, int[][8]);
+int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, int player, int board[][8]);
 
-int attackedByKing(int, int, int, int);
+int attackedByKing(int colKing, int rowKing, int colSquare, int rowSquare);
 
 int squareUnderAttack(int colPos, int rowPos, int player, int board[][8]) {
     /*TODO: a square-attacked checker function*/
@@ -156,7 +156,6 @@ int attackedByKnight(int colKnight, int rowKnight, int colSquare, int rowSquare)
     return 0;
 }
 
-/* TODO: except king on the move, not really accurate but is a temporary solution */
 int attackedByBishop(int colBishop, int rowBishop, int colSquare, int rowSquare, int player, int board[][8]) {
 
     if (abs(colBishop - colSquare) == abs(rowBishop - rowSquare)) {
@@ -164,15 +163,14 @@ int attackedByBishop(int colBishop, int rowBishop, int colSquare, int rowSquare,
         if (colBishop - colSquare == 0) {
             return 0;
         }
-        int i, j, king;
-        king = player ? bKing : wKing;
+        int i, j;
 
         if (rowSquare > rowBishop && colSquare > colBishop) {
             /*move south east*/
             i = rowBishop;
             for (j = colBishop + 1; j < colSquare; j++) {
                 i++;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -182,7 +180,7 @@ int attackedByBishop(int colBishop, int rowBishop, int colSquare, int rowSquare,
             i = rowBishop;
             for (j = colBishop - 1; j > colSquare; j--) {
                 i++;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -192,7 +190,7 @@ int attackedByBishop(int colBishop, int rowBishop, int colSquare, int rowSquare,
             i = rowBishop;
             for (j = colBishop - 1; j > colSquare; j--) {
                 --i;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -202,7 +200,7 @@ int attackedByBishop(int colBishop, int rowBishop, int colSquare, int rowSquare,
             i = rowBishop;
             for (j = colBishop + 1; j < colSquare; j++) {
                 --i;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -216,16 +214,14 @@ int attackedByBishop(int colBishop, int rowBishop, int colSquare, int rowSquare,
     return 0;
 }
 
-/* TODO: ngoại trừ vua trên đường ra */
 int attackedByRook(int colRook, int rowRook, int colSquare, int rowSquare, int player, int board[][8]) {
 
-    int i, king;
-    king = player ? bKing : wKing;
+    int i;
 
     if (rowSquare > rowRook && colSquare == colRook) {
         /*move south*/
         for (i = rowRook + 1; i < rowSquare; ++i) {
-            if (checkPosition(i, colRook, board) >= 1 && checkPosition(i, colRook, board) != king) {
+            if (checkPosition(i, colRook, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }
@@ -235,7 +231,7 @@ int attackedByRook(int colRook, int rowRook, int colSquare, int rowSquare, int p
     } else if (rowSquare == rowRook && colSquare < colRook) {
         /*move west*/
         for (i = colRook - 1; i > colSquare; --i) {
-            if (checkPosition(rowRook, i, board) >= 1 && checkPosition(rowRook, i, board) != king) {
+            if (checkPosition(rowRook, i, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }
@@ -245,7 +241,7 @@ int attackedByRook(int colRook, int rowRook, int colSquare, int rowSquare, int p
     } else if (rowSquare < rowRook && colSquare == colRook) {
         /*move north*/
         for (i = rowRook - 1; i > rowSquare; --i) {
-            if (checkPosition(i, colRook, board) >= 1 && checkPosition(i, colRook, board) != king) {
+            if (checkPosition(i, colRook, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }
@@ -255,7 +251,7 @@ int attackedByRook(int colRook, int rowRook, int colSquare, int rowSquare, int p
     } else if (rowSquare == rowRook && colSquare > colRook) {
         /*move east*/
         for (i = colRook + 1; i < colSquare; ++i) {
-            if (checkPosition(rowRook, i, board) >= 1 && checkPosition(rowRook, i, board) != king) {
+            if (checkPosition(rowRook, i, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }
@@ -270,8 +266,7 @@ int attackedByRook(int colRook, int rowRook, int colSquare, int rowSquare, int p
 
 int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, int player, int board[][8]) {
 
-	int i, j, king;
-    king = player ? bKing : wKing;
+	int i, j;
 	/* look like bishop */
 	if (abs(colQueen - colSquare) == abs(rowQueen - rowSquare)) {
         if (colQueen - colSquare == 0) {
@@ -282,7 +277,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
             i = rowQueen;
             for (j = colQueen + 1; j < colSquare; j++) {
                 i++;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -292,7 +287,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
             i = rowQueen;
             for (j = colQueen - 1; j > colSquare; j--) {
                 i++;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -302,7 +297,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
             i = rowQueen;
             for (j = colQueen - 1; j > colSquare; j--) {
                 --i;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -312,7 +307,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
             i = rowQueen;
             for (j = colQueen + 1; j < colSquare; j++) {
                 --i;
-                if (checkPosition(i, j, board) >= 1 && checkPosition(i, j, board) != king) {
+                if (checkPosition(i, j, board)) {
                     /*if piece at intermediate position, the square is not attacked*/
                     return 0;
                 }
@@ -326,7 +321,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
     if (rowSquare > rowQueen && colSquare == colQueen) {
         /*move south*/
         for (i = rowQueen + 1; i < rowSquare; ++i) {
-            if (checkPosition(i, colQueen, board) >= 1 && checkPosition(i, colQueen, board) != king) {
+            if (checkPosition(i, colQueen, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }
@@ -336,7 +331,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
     } else if (rowSquare == rowQueen && colSquare < colQueen) {
         /*move west*/
         for (i = colQueen - 1; i > colSquare; --i) {
-            if (checkPosition(rowQueen, i, board) >= 1 && checkPosition(rowQueen, i, board) != king) {
+            if (checkPosition(rowQueen, i, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }
@@ -346,7 +341,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
     } else if (rowSquare < rowQueen && colSquare == colQueen) {
         /*move north*/
         for (i = rowQueen - 1; i > rowSquare; --i) {
-            if (checkPosition(i, colQueen, board) >= 1 && checkPosition(i, colQueen, board) != king) {
+            if (checkPosition(i, colQueen, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }
@@ -356,7 +351,7 @@ int attackedByQueen(int colQueen, int rowQueen, int colSquare, int rowSquare, in
     } else if (rowSquare == rowQueen && colSquare > colQueen) {
         /*move east*/
         for (i = colQueen + 1; i < colSquare; ++i) {
-            if (checkPosition(rowQueen, i, board) >= 1 && checkPosition(rowQueen, i, board) != king) {
+            if (checkPosition(rowQueen, i, board)) {
                 /*if piece at intermediate position, the square is not attacked*/
                 return 0;
             }

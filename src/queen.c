@@ -1,20 +1,33 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 extern int checkPosition(int row, int col, int b[][8]);
 
-int queen(int pos[], int board[][8]) {
+extern int kingUnderAttack(int player, int board[][8]);
+
+extern void completemove(int pos[], int b[][8]);
+
+int queen(int pos[], int player, int board[][8]) {
     /*[col][row][col][row]*/
     /*pos[] contains current positions and new positions [0][1]=current [2][3] = new*/
+    int tempBoard[8][8];
     int i, j;
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            tempBoard[i][j] = board[i][j];
+        }
+    }
+
     if (pos[3] > pos[1] && pos[2] == pos[0]) {
         /*move south*/
         for (i = pos[1] + 1; i < pos[3]; ++i) {
             if (checkPosition(i, pos[0], board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: South: piece (%c%c) on the move\n", pos[0]+97, 8-i+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
@@ -23,9 +36,12 @@ int queen(int pos[], int board[][8]) {
         for (i = pos[0] - 1; i > pos[2]; --i) {
             if (checkPosition(pos[1], i, board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: West: piece (%c%c) on the move\n", i+97, 8-pos[1]+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
@@ -34,9 +50,12 @@ int queen(int pos[], int board[][8]) {
         for (i = pos[1] - 1; i > pos[3]; --i) {
             if (checkPosition(i, pos[0], board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: North: piece (%c%c) on the move\n", pos[0]+97, 8-i+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
@@ -45,9 +64,12 @@ int queen(int pos[], int board[][8]) {
         for (i = pos[0] + 1; i < pos[2]; ++i) {
             if (checkPosition(pos[1], i, board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: East: piece (%c%c) on the move\n", i+97, 8-pos[1]+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
@@ -63,9 +85,12 @@ int queen(int pos[], int board[][8]) {
             i++;
             if (checkPosition(i, j, board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: South east: piece (%c%c) on the move\n", j+97, 8-i+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
@@ -81,9 +106,12 @@ int queen(int pos[], int board[][8]) {
             ++i;
             if (checkPosition(i, j, board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: South west: piece (%c%c) on the move\n", j+97, 8-i+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
@@ -99,9 +127,12 @@ int queen(int pos[], int board[][8]) {
             --i;
             if (checkPosition(i, j, board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: North west: piece (%c%c) on the move\n", j+97, 8-i+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
@@ -117,15 +148,17 @@ int queen(int pos[], int board[][8]) {
             --i;
             if (checkPosition(i, j, board)) {
                 /*if piece at intermediate position move is illegal*/
-                printf("Queen error: North east: piece (%c%c) on the move\n", j+97, 8-i+48);
                 return 0;
             }
+        }
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
         }
         /*reached new position*/
         return 1;
     } else {
         /*illegal move*/
-        printf("Illegal move");
         return 0;
     }
 }

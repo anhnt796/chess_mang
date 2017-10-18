@@ -2,13 +2,13 @@
 #include <string.h>
 #include "pieceConst.h"
 
-extern int rook(int pos[], int board[][8]);
+extern int rook(int pos[], int player, int board[][8]);
 
-extern int knight(int pos[], int board[][8]);
+extern int knight(int pos[], int player, int board[][8]);
 
-extern int bishop(int pos[], int board[][8]);
+extern int bishop(int pos[], int player, int board[][8]);
 
-extern int queen(int pos[], int board[][8]);
+extern int queen(int pos[], int player, int board[][8]);
 
 extern int king(int pos[], int player, int board[][8]);
 
@@ -155,7 +155,7 @@ int checkMove(int input[], int player, int board[][8]) {
         }
     } else if (piece == 2 || piece == 8) {
         /*piece is a knight*/
-        if (knight(input, board)) {
+        if (knight(input, player, board)) {
             completemove(input, board);
             /*move completed*/
             return 1;
@@ -165,7 +165,7 @@ int checkMove(int input[], int player, int board[][8]) {
         }
     } else if (piece == 3 || piece == 9) {
         /*piece is a bishop*/
-        if (bishop(input, board)) {
+        if (bishop(input, player, board)) {
             completemove(input, board);
             /*move completed*/
             return 1;
@@ -175,7 +175,7 @@ int checkMove(int input[], int player, int board[][8]) {
         }
     } else if (piece == 4 || piece == 10) {
         /*piece is a rook*/
-        if (rook(input, board)) {
+        if (rook(input, player, board)) {
             completemove(input, board);
             /*move completed*/
             return 1;
@@ -185,7 +185,7 @@ int checkMove(int input[], int player, int board[][8]) {
         }
     } else if (piece == 5 || piece == 11) {
         /*piece is a queen*/
-        if (queen(input, board)) {
+        if (queen(input, player, board)) {
             completemove(input, board);
             /*move completed*/
             return 1;
