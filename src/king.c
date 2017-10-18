@@ -16,130 +16,66 @@ int king(int pos[], int player, int board[][8]) {
             tempBoard[i][j] = board[i][j];
         }
     }
-
-    if (player) {
-        /* player is black */
-        if (pos[3] == pos[1] + 1 && pos[2] == pos[0]) {
-            /*move south*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] && pos[2] == pos[0] - 1) {
-            /*move west*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0]) {
-            /*move north*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] && pos[2] == pos[0] + 1) {
-            /*move east*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] + 1 && pos[2] == pos[0] + 1) {
-            /*move south east*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] + 1 && pos[2] == pos[0] - 1) {
-            /*move south west*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0] - 1) {
-            /*move north west*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0] + 1) {
-            /*move north east*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else {
-            /*illegal move*/
+    
+    if (pos[3] == pos[1] + 1 && pos[2] == pos[0]) {
+        /*move south*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
             return 0;
         }
+        return 1;
+    } else if (pos[3] == pos[1] && pos[2] == pos[0] - 1) {
+        /*move west*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
+        }
+        return 1;
+    } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0]) {
+        /*move north*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
+        }
+        return 1;
+    } else if (pos[3] == pos[1] && pos[2] == pos[0] + 1) {
+        /*move east*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
+        }
+        return 1;
+    } else if (pos[3] == pos[1] + 1 && pos[2] == pos[0] + 1) {
+        /*move south east*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
+        }
+        return 1;
+    } else if (pos[3] == pos[1] + 1 && pos[2] == pos[0] - 1) {
+        /*move south west*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
+        }
+        return 1;
+    } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0] - 1) {
+        /*move north west*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
+        }
+        return 1;
+    } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0] + 1) {
+        /*move north east*/
+        completemove(pos, tempBoard);
+        if (kingUnderAttack(player, tempBoard)) {
+            return 0;
+        }
+        return 1;
     } else {
-        /* player is white */
-        if (pos[3] == pos[1] + 1 && pos[2] == pos[0]) {
-            /*move south*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] && pos[2] == pos[0] - 1) {
-            /*move west*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0]) {
-            /*move north*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] && pos[2] == pos[0] + 1) {
-            /*move east*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] + 1 && pos[2] == pos[0] + 1) {
-            /*move south east*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] + 1 && pos[2] == pos[0] - 1) {
-            /*move south west*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0] - 1) {
-            /*move north west*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else if (pos[3] == pos[1] - 1 && pos[2] == pos[0] + 1) {
-            /*move north east*/
-            completemove(pos, tempBoard);
-            if (kingUnderAttack(player, tempBoard)) {
-                return 0;
-            }
-            return 1;
-        } else {
-            /*illegal move*/
-            return 0;
-        }
+        /*illegal move*/
+        return 0;
     }
+
 }
