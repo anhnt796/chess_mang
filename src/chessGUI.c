@@ -29,6 +29,8 @@ extern void initBoard(int tmpBoard[][8]);
 
 extern void resetPassantArrays(void);
 
+extern int kingUnderAttack(int player, int board[][8]);
+
 int main(int argc, char *argv[]) {
     /*fill the board array with pieces*/
     initBoard(board);
@@ -274,6 +276,12 @@ static gboolean button_pressed(GtkWidget *ebox, GdkEventButton *event,
                 } else {
                     gtk_label_set_text(currentPlayer, "Current player: White");
                 }
+
+                if (kingUnderAttack(player, board)) {
+                    if (player) printf("Black King is now checked!\n");
+                    if (!player) printf("White King is now checked!\n");
+                }
+
             }
             clicks = 0;
         }

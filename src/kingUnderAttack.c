@@ -1,6 +1,6 @@
 /* This function checks if the king is currently under attack
  * If the king is under attack, returns 1, else returns 0
- * Specially returns 2 if double-check.
+ * Specially (maybe) returns 2 if double-check.
  * Test later.
  */
 #include "pieceConst.h"
