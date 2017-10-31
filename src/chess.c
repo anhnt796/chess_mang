@@ -16,6 +16,11 @@ extern int pawn(int pos[], int player, int board[][8]);
 
 extern int completemove(int pos[], int board[][8]);
 
+extern void completecastlemove(int cases, int b[][8]);
+
+extern int checkPosition(int row, int col, int b[][8]);
+
+extern int squareUnderAttack(int colPos, int rowPos, int player, int board[][8]);
 /*
 struct wChessPieces {
 	int type;
@@ -35,6 +40,7 @@ wChessPieces nodeW;
 /*int board[8][8]; for use with cmd chess*/
 
 int enPassantW[8], enPassantB[8];
+int castleW[2], castleB[2]; // index = 0: castle kingside, index = 1: castle queenside;
 
 void initBoard(int tmpBoard[][8]) {
     tmpBoard[7][7] = wRook;
@@ -71,6 +77,11 @@ void initBoard(int tmpBoard[][8]) {
             tmpBoard[i][j] = emptySquare;
         }
     }
+
+    for (i = 0; i < 2; i++) {
+        castleW[i] = 1;     // white can castle kside and qside
+        castleB[i] = 1;     // black can castle kside and qside
+    }
 }
 
 /*set the en passant arrays to 0
@@ -82,6 +93,17 @@ void resetPassantArrays(void) {
     for (i = 0; i < 8; ++i) {
         enPassantW[i] = 0;
         enPassantB[i] = 0;
+    }
+}
+
+/*call this procedure when a king/rook movement is made*/
+void setCastle(int cases) {
+    switch (cases) {
+        case 0: castleW[0] = 0; break;
+        case 1: castleW[1] = 0; break;
+        case 2: castleB[0] = 0; break;
+        case 3: castleB[1] = 0; break;
+        default: break;
     }
 }
 
@@ -176,6 +198,23 @@ int checkMove(int input[], int player, int board[][8]) {
     } else if (piece == 4 || piece == 10) {
         /*piece is a rook*/
         if (rook(input, player, board)) {
+            /*set castle when rook moved*/
+            /*if player is white*/
+            if (!player) {
+                if (input[0] == 7 && input[1] == 7) {   // rook at h1
+                    setCastle(WKSIDE);
+                } else if (input[0] == 0 && input[1] == 7) {    // rook at a1
+                    setCastle(WQSIDE);
+                }
+            }
+            /*player is black*/
+            else {
+                if (input[0] == 7 && input[1] == 0) {   // rook at h8
+                    setCastle(WKSIDE);
+                } else if (input[0] == 0 && input[1] == 0) {    // rook at a8
+                    setCastle(WQSIDE);
+                }
+            }
             completemove(input, board);
             /*move completed*/
             return 1;
@@ -195,9 +234,119 @@ int checkMove(int input[], int player, int board[][8]) {
         }
     } else if (piece == 6 || piece == 12) {
         /*piece is a king*/
-        if (king(input, player, board)) {
+        /*check castle first*/
+        /*white castle kingside*/
+        if (player == WHITE && input[0] == 4 && input[1] == 7 && input[2] == 6 && input[3] == 7) {
+            if (castleW[0]) {   // not castle yet
+                if (checkPosition(7, 7, board) != wRook)    // there hasn't a rook on h1
+                    return 0;
+                if (checkPosition(7, 5, board))     // there has a piece on f1
+                    return 0;
+                if (checkPosition(7, 6, board))     // there has a piece on g1
+                    return 0;
+                if (squareUnderAttack(4, 7, WHITE, board))  // e1 is checked
+                    return 0;
+                if (squareUnderAttack(5, 7, WHITE, board))  // f1 is checked
+                    return 0;
+                if (squareUnderAttack(6, 7, WHITE, board))  // g1 is checked
+                    return 0;
+                completecastlemove(WKSIDE, board);
+                setCastle(WKSIDE);
+                setCastle(WQSIDE);
+                return 1;
+            } else {
+                /*invalid castle*/
+                return 0;
+            }
+        }
+        /*white castle queenside*/
+        else if (player == WHITE && input[0] == 4 && input[1] == 7 && input[2] == 2 && input[3] == 7) {
+            if (castleW[1]) {
+                if (checkPosition(7, 0, board) != wRook)    // there hasn't a rook on a1
+                    return 0;
+                if (checkPosition(7, 3, board))     // there has a piece on d1
+                    return 0;
+                if (checkPosition(7, 2, board))     // there has a piece on c1
+                    return 0;
+                if (checkPosition(7, 1, board))     // there has a piece on b1
+                    return 0;
+                if (squareUnderAttack(4, 7, WHITE, board))  // e1 is checked
+                    return 0;
+                if (squareUnderAttack(3, 7, WHITE, board))  // d1 is checked
+                    return 0;
+                if (squareUnderAttack(2, 7, WHITE, board))  // c1 is checked
+                    return 0;
+                completecastlemove(WQSIDE, board);
+                setCastle(WKSIDE);
+                setCastle(WQSIDE);
+                return 1;
+            } else {
+                /*invalid castle*/
+                return 0;
+            }
+        }
+        /*black castle kingside*/
+        else if (player == BLACK && input[0] == 4 && input[1] == 0 && input[2] == 6 && input[3] == 0) {
+            if (castleB[0]) {
+                if (checkPosition(0, 7, board) != bRook)    // there hasn't a rook on h8
+                    return 0;
+                if (checkPosition(0, 5, board))     // there has a piece on f8
+                    return 0;
+                if (checkPosition(0, 6, board))     // there has a piece on g8
+                    return 0;
+                if (squareUnderAttack(4, 0, BLACK, board))  // e8 is checked
+                    return 0;
+                if (squareUnderAttack(5, 0, BLACK, board))  // f8 is checked
+                    return 0;
+                if (squareUnderAttack(6, 0, BLACK, board))  // g8 is checked
+                    return 0;
+                completecastlemove(BKSIDE, board);
+                setCastle(BKSIDE);
+                setCastle(BQSIDE);
+                return 1;
+            } else {
+                /*invalid castle*/
+                return 0;
+            }
+        }
+        /*black castle queenside*/
+        else if (player == BLACK && input[0] == 4 && input[1] == 0 && input[2] == 2 && input[3] == 0) {
+            if (castleB[1]) {
+                if (checkPosition(0, 0, board) != bRook)    // there hasn't a rook on a8
+                    return 0;
+                if (checkPosition(0, 3, board))     // there has a piece on d8
+                    return 0;
+                if (checkPosition(0, 2, board))     // there has a piece on c8
+                    return 0;
+                if (checkPosition(0, 1, board))     // there has a piece on b8
+                    return 0;
+                if (squareUnderAttack(4, 0, BLACK, board))  // e8 is checked
+                    return 0;
+                if (squareUnderAttack(3, 0, BLACK, board))  // d8 is checked
+                    return 0;
+                if (squareUnderAttack(2, 0, BLACK, board))  // c8 is checked
+                    return 0;
+                completecastlemove(BQSIDE, board);
+                setCastle(BKSIDE);
+                setCastle(BQSIDE);
+                return 1;
+            } else {
+                /*invalid castle*/
+                return 0;
+            }
+        }
+        /*normal move*/
+        else if (king(input, player, board)) {
+            printf("%d %d %d %d %d\n", input[0], input[1], input[2], input[3], player);
             completemove(input, board);
             /*move completed*/
+            if (!player) {
+                setCastle(WKSIDE);
+                setCastle(WQSIDE);
+            } else {
+                setCastle(BKSIDE);
+                setCastle(BQSIDE);
+            }
             return 1;
         } else {
             /*invalid move*/
