@@ -5,7 +5,7 @@
 - [x] write check for king being checked
 - [ ] write move generator function
 - [x] en passant
-- [ ] add castle' rules
+- [x] add castle rules
 - [x] promotion (now automatically promote to queen)
 - [ ] checkmate/stalemate
 - [ ] draw threefold repetition
