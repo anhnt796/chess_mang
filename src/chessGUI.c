@@ -31,6 +31,8 @@ extern void resetPassantArrays(void);
 
 extern int kingUnderAttack(int player, int board[][8]);
 
+extern int hasMovement(int player, int board[][8]);
+
 int main(int argc, char *argv[]) {
     /*fill the board array with pieces*/
     initBoard(board);
@@ -86,8 +88,7 @@ int main(int argc, char *argv[]) {
             }
 
             gtk_event_box_set_above_child(GTK_EVENT_BOX(eventbox), FALSE);
-            gtk_widget_override_font((GtkWidget *) label, pango_font_description_from_string(
-                    "Serif 26"));
+            gtk_widget_override_font((GtkWidget *) label, pango_font_description_from_string("Serif 36"));
             /*put label into eventbox*/
             gtk_container_add(GTK_CONTAINER(eventbox), (GtkWidget *) label);
             /*put eventbox into table*/
@@ -110,7 +111,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* add square row names */
-    gtk_widget_override_font((GtkWidget *) label, pango_font_description_from_string("Serif 16"));
+    // gtk_widget_override_font((GtkWidget *) label, pango_font_description_from_string("Serif 16"));
     sprintf(mnum, "%s", "`");
     for (i = 1; i < 9; i++) {
         mnum[0]++; // mnums first char becomes 'a', then 'b', then 'c' etc.
@@ -281,6 +282,17 @@ static gboolean button_pressed(GtkWidget *ebox, GdkEventButton *event,
                     if (player) printf("Black King is now checked!\n");
                     if (!player) printf("White King is now checked!\n");
                 }
+                /* TODO */
+                
+                if (!hasMovement(player, board)) {
+                    if (kingUnderAttack(player, board)) {
+                        if (player) printf("Black checkmated, white wins!\n");
+                        if (!player) printf("White checkmated, black wins!\n");
+                    } else {
+                        printf("Stalemate!\n");
+                    }
+                }
+                
 
             }
             clicks = 0;
