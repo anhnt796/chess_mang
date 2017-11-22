@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 extern int squareUnderAttack(int colPos, int rowPos, int player, int board[][8]);
 
 extern int kingUnderAttack(int player, int board[][8]);

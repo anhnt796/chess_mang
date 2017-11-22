@@ -15,7 +15,6 @@ GtkCssProvider *provider;
 GdkDisplay *display;
 GdkScreen *screen;
 /*------*/
-
 static const GdkRGBA green = {0.5899, 0.8867, 0.3906, 1};
 static const GdkRGBA dbrown = {0.8242, 0.5508, 0.2773, 1};
 static const GdkRGBA lbrown = {0.9805, 0.8047, 0.6094, 1};
@@ -42,6 +41,11 @@ extern void resetPassantArrays(void);
 
 extern int kingUnderAttack(int player, int board[][8]);
 
+<<<<<<< HEAD
+=======
+extern int hasMovement(int player, int board[][8]);
+
+>>>>>>> 3ba4813145f95c82299c14a1ea0eb5808953c8e2
 int main(int argc, char *argv[]) {
     /*fill the board array with pieces*/
     initBoard(board);
@@ -97,6 +101,7 @@ int main(int argc, char *argv[]) {
             }
 
             gtk_event_box_set_above_child(GTK_EVENT_BOX(eventbox), FALSE);
+
             gtk_widget_override_font((GtkWidget *) label, pango_font_description_from_string(
                     "Serif 36"));
             /*put label into eventbox*/
@@ -169,7 +174,6 @@ int main(int argc, char *argv[]) {
     gtk_grid_attach((GtkGrid *) infogrid, (GtkWidget *) currentPlayer, 0, 0, 1, 1);
     gtk_grid_attach((GtkGrid *) hpane, (GtkWidget *) infogrid, 1, 0, 1, 1);
 
-
     /* create main window */
     GtkWidget *window_main;
 	GtkBuilder * builder;
@@ -219,7 +223,6 @@ int main(int argc, char *argv[]) {
     gtk_main();
     return 0;
 }
-
 static void play(GtkWidget *widget, GtkWidget *window) {
 	g_print("Play!\n");
 	gtk_widget_show_all(window);
@@ -377,6 +380,16 @@ static gboolean button_pressed(GtkWidget *ebox, GdkEventButton *event,
                 if (kingUnderAttack(player, board)) {
                     if (player) printf("Black King is now checked!\n");
                     if (!player) printf("White King is now checked!\n");
+                }
+                /* TODO */
+                
+                if (!hasMovement(player, board)) {
+                    if (kingUnderAttack(player, board)) {
+                        if (player) printf("Black checkmated, white wins!\n");
+                        if (!player) printf("White checkmated, black wins!\n");
+                    } else {
+                        printf("Stalemate!\n");
+                    }
                 }
 
             }

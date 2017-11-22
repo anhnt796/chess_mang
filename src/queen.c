@@ -161,4 +161,6 @@ int queen(int pos[], int player, int board[][8]) {
         /*illegal move*/
         return 0;
     }
+
 }
+
