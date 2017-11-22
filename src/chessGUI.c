@@ -41,11 +41,7 @@ extern void resetPassantArrays(void);
 
 extern int kingUnderAttack(int player, int board[][8]);
 
-<<<<<<< HEAD
-=======
 extern int hasMovement(int player, int board[][8]);
-
->>>>>>> 3ba4813145f95c82299c14a1ea0eb5808953c8e2
 int main(int argc, char *argv[]) {
     /*fill the board array with pieces*/
     initBoard(board);
@@ -398,3 +394,4 @@ static gboolean button_pressed(GtkWidget *ebox, GdkEventButton *event,
     }
     return FALSE;
 }
+    
