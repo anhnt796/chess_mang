@@ -21,8 +21,8 @@ extern int checkPosition(int row, int col, int b[][8]);
 extern int squareUnderAttack(int colPos, int rowPos, int player, int board[][8]);
 
 extern int kingUnderAttack(int player, int board[][8]);
-
 void resetCastle(void);
+
 
 int enPassantW[8], enPassantB[8];
 int castleW[2], castleB[2]; // index = 0: castle kingside, index = 1: castle queenside;
@@ -63,6 +63,7 @@ void initBoard(int tmpBoard[][8]) {
         }
     }
 
+
     resetCastle();
 }
 
@@ -86,7 +87,6 @@ void resetCastle(void) {
         castleB[i] = 1;     // black can castle kside and qside
     }
 }
-
 /*call this procedure when a king/rook movement is made*/
 void setCastle(int cases) {
     switch (cases) {
