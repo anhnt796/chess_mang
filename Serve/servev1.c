@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 #include "decode.h"
 
 #define PORT 3000
@@ -80,13 +81,15 @@ int main(int argc, char *argv[])
         if (n < 0)
             error("ERROR reading from socket");
         decod = getresults(buffer);
-        printf("%d %s\n", decod.cmd, decod.var);
         switch (decod.cmd)
         {
         case 1: // declared host
             if (hostNum < MAX_HOST)
             {
-                strcpy(hostArr[hostNum].hostAddress, decod.var);
+		char *a;
+		a = inet_ntoa(cli_addr.sin_addr);
+		printf("%s\n", a);
+                strcpy(hostArr[hostNum].hostAddress, a);
                 hostNum++;
             }
             else
