@@ -29,6 +29,7 @@ int clicks = 0;
 int player = 0;
 int player_color;
 int isServer;
+int isReady = 0;
 
 char note[5];
 char mnum[11]; // max int size is 10 chars long + 0 char
@@ -59,6 +60,8 @@ GtkWidget *window_main;
 //thread
 GThread *thread;
 GError *error = 0;
+
+//board function 
 static void updateGUI();
 static void make_Board();
 static void xin_hoa_end_dialog();
@@ -66,15 +69,20 @@ static void xin_hoa_new_dialog();
 static void xin_thua_end_dialog();
 static void xin_thua_new_dialog();
 static void backToMain();
+static void destroyBoard();
+static void resetBoard();
+static int sendMessage(char*);
 extern int makemove(int player, int *move, int board[][8]);
 extern decoded getresults(char *input);
 
 static void play(GtkWidget *widget)
 {
+    isReady = 1;
     g_print("Play!\n");
+    gtk_widget_hide(gtk_widget_get_toplevel(widget));
     make_Board();
     gtk_widget_show_all(window);
-    gtk_widget_hide(gtk_widget_get_toplevel(widget));
+    
 }
 
 // Thạch, get current computer's ip
@@ -127,6 +135,26 @@ static int send1MessageToBigServer(char *message)
     return sockfd;
 }
 
+
+static int sendMessage(char *temp) {
+    if(!isServer){
+           ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
+            if(ret < 0) {
+                        return 0;
+                    }
+    }
+
+    else {
+           ret = sendto(newsockfd,temp, BUF_SIZE, 0, (struct sockaddr *) &cl_addr,len);
+           if(ret < 0) {
+                return 0;
+                        }
+        }
+
+    return 1;
+}
+
+
 static void receiveCmd(void *socket)
 {
     int sockfd, ret;
@@ -159,13 +187,13 @@ static void receiveCmd(void *socket)
                     case 0: xin_hoa_end_dialog();
                         break;
                     case 1: 
-                        gtk_widget_destroy(window);
-                        backToMain(window,window_main);
+                        destroyBoard();
                         break;
                     case 2: xin_hoa_new_dialog();
                         break;
                     case 3:
-                        initBoard(board);
+                        destroyBoard();
+                        play(window_main);
                         break;
 
                 }
@@ -182,11 +210,11 @@ static void receiveCmd(void *socket)
                         xin_thua_new_dialog();
                         break;
                     case 2: 
-                        printf("choi moi\n");
+                        destroyBoard();
+                        play(window_main);
                         break;
                     case 3:
-                        gtk_widget_destroy(window);
-                        backToMain(window,window_main);
+                        destroyBoard();
                         break;
                     
                 }
@@ -330,11 +358,23 @@ static void make_server()
         return (-1);
     }
 }
+
+static void resetBoard(){
+    player = 0;
+    initBoard(board);
+    drawGuiBoard(labelBoard, board);
+    isReady = 1;
+}
+static destroyBoard() {
+    isReady = 0;
+    gtk_widget_destroy(window);
+    backToMain(window,window_main);
+}
+
 static void xin_hoa_end(){
     char temp[10];
     strcpy(temp,"DRAW   0");
-    ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-    if(ret < 0) 
+    if(!sendMessage(temp)) 
     {
         printf("gui tin nhan cau hoa that bai\n");
     }
@@ -344,8 +384,7 @@ static void xin_hoa_end(){
 static void xin_hoa_new(){
     char temp[10];
     strcpy(temp,"DRAW   2");
-    ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-    if(ret < 0) 
+    if(!sendMessage(temp)) 
     {
         printf("gui tin nhan cau hoa/moi that bai\n");
     }
@@ -355,8 +394,7 @@ static void xin_hoa_new(){
 static void xin_thua_end(){
     char temp[10];
     strcpy(temp,"LOSE   0");
-    ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-    if(ret < 0) 
+    if(!sendMessage(temp)) 
     {
         printf("gui tin nhan thua that bai\n");
     }
@@ -370,8 +408,7 @@ static void xin_thua_end(){
 static void xin_thua_new(){
     char temp[10];
     strcpy(temp,"LOSE  1");
-    ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-    if(ret < 0) 
+    if(!sendMessage(temp)) 
     {
         printf("gui tin nhan thua/moi that bai\n");
     }

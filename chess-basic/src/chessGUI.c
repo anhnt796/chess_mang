@@ -18,6 +18,7 @@ static void connect_sv(GtkWindow *, gchar *);
 static void connect_host(GtkWindow *, gchar *);
 static void updateGUI();
 static void make_Board();
+static void chon_mau_dialog();
 static void xin_hoa_end_dialog();
 static void xin_hoa_new_dialog();
 static void xin_thua_end_dialog();
@@ -32,9 +33,6 @@ extern int hasMovement(int player, int board[][8]);
 extern decoded getresults(char *input);
 
 int main(int argc, char *argv[]) {
-    /*fill the board array with pieces*/
-    initBoard(board);
-    resetPassantArrays();
     /* Secure glib */
     if( ! g_thread_supported() )
         g_thread_init( NULL );
@@ -50,7 +48,7 @@ int main(int argc, char *argv[]) {
     /* create main window */
     GtkBuilder * builder;
     builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder,"builder.xml",NULL);
+    gtk_builder_add_from_file (builder,"test.xml",NULL);
     window_main = GTK_WIDGET(gtk_builder_get_object(builder,"window"));
     g_signal_connect(window_main,"destroy",G_CALLBACK(gtk_main_quit),NULL);
     GtkWidget *button;
@@ -138,7 +136,6 @@ static void connect_host(GtkWindow *parent, gchar *message) {
     close(a);
     strcpy(mes + strlen(mes), varible);
     //
-
     dialog = gtk_dialog_new();
     player_color = 1;
     gtk_window_set_title(GTK_WINDOW(dialog),"Connect to a host... ");
@@ -314,18 +311,8 @@ static gboolean button_pressed(GtkWidget *ebox, GdkEventButton *event,
                 strcpy(temp,"MOVE	");
                 strcpy(temp+strlen(temp),code);
                 printf("%s\n",temp);
-                if(!isServer)                	{
-                		ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-                		if(ret < 0) {
-                    	printf("Error sending data\n");
-                	}
-                }
-
-                else {
-                	 	ret = sendto(newsockfd,temp, BUF_SIZE, 0, (struct sockaddr *) &cl_addr,len);
-                		if(ret < 0) {
-                    	printf("Error send to client\n");
-                		}
+                if(!sendMessage(temp)){
+                    printf("gui nuoc di that bai\n");
                 }
                 updateGUI();
 
@@ -338,6 +325,9 @@ static gboolean button_pressed(GtkWidget *ebox, GdkEventButton *event,
     return FALSE;
 }
 static void make_Board() {
+    player = 0;
+    initBoard(board);
+    resetPassantArrays();
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Chess board");
     gtk_container_set_border_width(GTK_CONTAINER(window), 5);
@@ -477,9 +467,35 @@ static void make_Board() {
     g_signal_connect(G_OBJECT(window), "destroy",
                              G_CALLBACK(backToMain),window_main);
     gtk_widget_show_all(window);
-
+    chon_mau_dialog();
 }
 
+static void chon_mau_dialog(){
+    GtkWidget *dialog, *label, *content_area, *text_entry, *button, *button2;
+    GtkDialogFlags flags;
+    flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;    
+    dialog = gtk_dialog_new_with_buttons("Chon Mau", window,flags,("TRANG"),GTK_RESPONSE_ACCEPT,("DEN"),GTK_RESPONSE_REJECT,NULL);
+    gint result = gtk_dialog_run (GTK_DIALOG (dialog));
+    char temp[10];
+    switch (result)
+    {
+        case GTK_RESPONSE_ACCEPT:
+                strcpy(temp,"PCLR   1");
+                player_color = 0;
+                if(!sendMessage(temp)){
+                    printf("gui tin nhat chon mau that bai\n");
+                }
+                break;
+        default:
+                strcpy(temp,"PCLR   0");
+                player_color = 1;
+                if(!sendMessage(temp)){
+                    printf("gui tin nhan chon mau that bai\n");
+                }
+            break;
+    }
+    gtk_widget_destroy(dialog);
+}
 static void xin_hoa_end_dialog(){
     GtkWidget *dialog, *label, *content_area, *text_entry, *button, *button2;
     GtkDialogFlags flags;
@@ -491,13 +507,14 @@ static void xin_hoa_end_dialog(){
     {
         case GTK_RESPONSE_ACCEPT:
                 strcpy(temp,"DRAW   1");
-                ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-                gtk_widget_destroy(window);
-                backToMain(window,window_main);
-            break;
+                if(!sendMessage(temp)) {
+                    printf("gui tin nhan donh y hoa/end that bat!\n");
+                }
+                destroyBoard();
+                break;
         default:
-        printf("ko biet\n");
-            break;
+                printf("ko biet\n");
+                break;
     }
     gtk_widget_destroy(dialog);
 }
@@ -505,7 +522,8 @@ static void xin_hoa_end_dialog(){
 static void xin_hoa_new_dialog(){
     GtkWidget *dialog, *label, *content_area, *text_entry, *button, *button2;
     GtkDialogFlags flags;
-    flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;    
+    flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+    gtk_widget_set_size_request(dialog, 250, 200);    
     dialog = gtk_dialog_new_with_buttons("Xin hoa va choi van moi ?", window,flags,("_OK"),GTK_RESPONSE_ACCEPT,("_KO"),GTK_RESPONSE_REJECT,NULL);
     gint result = gtk_dialog_run (GTK_DIALOG (dialog));
     char temp[10];
@@ -513,9 +531,12 @@ static void xin_hoa_new_dialog(){
     {
         case GTK_RESPONSE_ACCEPT:
                 strcpy(temp,"DRAW   3");
-                ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-                initBoard(board);
-            break;
+                if(!sendMessage(temp)){
+                    printf("chap nhan hoa.moi that bai!\n");
+                }
+                destroyBoard();
+                play(window_main);
+                break;
         default:
         printf("ko biet\n");
             break;
@@ -529,8 +550,7 @@ static void xin_thua_end_dialog(){
     flags = GTK_DIALOG_DESTROY_WITH_PARENT;    
     dialog = gtk_dialog_new_with_buttons("Doi thu nhan thua", window,flags,("_OK"),GTK_RESPONSE_NONE,NULL);
     gint result = gtk_dialog_run (GTK_DIALOG (dialog));
-    gtk_widget_destroy(window);
-    backToMain(window,window_main);
+    destroyBoard();
     gtk_widget_destroy(dialog);
 }
 
@@ -545,16 +565,16 @@ static void xin_thua_new_dialog(){
     {
         case GTK_RESPONSE_ACCEPT:
                 strcpy(temp,"LOSE   2");
-                ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-                initBoard(board);
-                 drawGuiBoard(labelBoard, board);
+                if(!sendMessage(temp))
+                    printf("gui tin chap nhan thua/moi thatbai!\n");
+                    destroyBoard();
+                    play(window_main);
             break;
         default:
                 strcpy(temp,"LOSE   3");
-                ret = sendto(sockfd, temp, BUF_SIZE, 0, (struct sockaddr *) &addr, sizeof(addr));
-        printf("ko biet\n");
-                gtk_widget_destroy(window);
-                backToMain(window,window_main);
+                if(!sendMessage(temp))
+                    printf("gui tin tu choi thua/moi thatbai!\n");
+                destroyBoard();
             break;
     }
     gtk_widget_destroy(dialog);

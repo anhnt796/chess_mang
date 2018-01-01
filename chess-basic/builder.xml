@@ -66,6 +66,13 @@
 			<packing>
 			</packing>
 		</child>
+		<child>
+              <object class="GtkImage" id="image1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="pixbuf">chess.jpg</property>
+              </object>
+        </child>
 	</object>
 </interface>
 
