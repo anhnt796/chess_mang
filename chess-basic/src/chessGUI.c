@@ -22,7 +22,7 @@ static void xin_hoa_end_dialog();
 static void xin_hoa_new_dialog();
 static void xin_thua_end_dialog();
 static void xin_thua_new_dialog();
-static char getABC(GtkWidget *radio);
+
 extern int makemove(int player, int *move, int board[][8]);
 
 /*initBoard method is in chess.c*/
@@ -32,14 +32,15 @@ extern int kingUnderAttack(int player, int board[][8]);
 extern int hasMovement(int player, int board[][8]);
 extern decoded getresults(char *input);
 
-int main(int argc, char *argv[])
-{
+
+int main(int argc, char *argv[]) {
     /*fill the board array with pieces*/
     initBoard(board);
     resetPassantArrays();
     /* Secure glib */
-    if (!g_thread_supported())
-        g_thread_init(NULL);
+
+    if( ! g_thread_supported() )
+        g_thread_init( NULL );
 
     /* Secure gtk */
     gdk_threads_init();
@@ -99,14 +100,12 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-static void backToMain(GtkWidget *widget, GtkWidget *window_main)
-{
+static void backToMain(GtkWidget *widget, GtkWidget *window_main) {
     g_print("Main menu!\n");
     gtk_widget_show_all(window_main);
 }
 
-static void create_sv(GtkWindow *parent, gchar *message)
-{
+static void create_sv(GtkWindow *parent, gchar *message) {
     GtkWidget *dialog, *label, *content_area;
     GtkDialogFlags flags;
 
@@ -402,7 +401,6 @@ static void make_Board()
     gtk_widget_set_size_request(window, 680, 350);
     //table = gtk_grid_new (8,8,TRUE);
     table = gtk_grid_new();
-
     /*one is larger to make the squares wider*/
     char *pieces[64] = {"♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜",
                         "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟",
