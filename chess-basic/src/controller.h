@@ -366,7 +366,9 @@ static void resetBoard(){
     isReady = 1;
 }
 static destroyBoard() {
+    char mes[50] = "DEST    ";
     isReady = 0;
+    send1MessageToBigServer(mes);
     gtk_widget_destroy(window);
     backToMain(window,window_main);
 }
