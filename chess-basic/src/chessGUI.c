@@ -588,7 +588,7 @@ static void xin_hoa_end_dialog(){
                 if(!sendMessage(temp)) {
                     printf("gui tin nhan donh y hoa/end that bat!\n");
                 }
-                destroyBoard();
+                backToMain(window,window_main);
                 break;
         default:
                 printf("ko biet\n");
@@ -612,8 +612,7 @@ static void xin_hoa_new_dialog()
                 if(!sendMessage(temp)){
                     printf("chap nhan hoa.moi that bai!\n");
                 }
-                destroyBoard();
-                play(window_main);
+                resetBoard();
                 break;
         default:
             printf("ko biet\n");
@@ -629,7 +628,7 @@ static void xin_thua_end_dialog()
     flags = GTK_DIALOG_DESTROY_WITH_PARENT;    
     dialog = gtk_dialog_new_with_buttons("Doi thu nhan thua", window,flags,("_OK"),GTK_RESPONSE_NONE,NULL);
     gint result = gtk_dialog_run (GTK_DIALOG (dialog));
-    destroyBoard();
+    backToMain(window,window_main);
     gtk_widget_destroy(dialog);
 }
 
@@ -647,14 +646,13 @@ static void xin_thua_new_dialog()
                 strcpy(temp,"LOSE   2");
                 if(!sendMessage(temp))
                     printf("gui tin chap nhan thua/moi thatbai!\n");
-                    destroyBoard();
-                    play(window_main);
+                    resetBoard();
             break;
         default:
                 strcpy(temp,"LOSE   3");
                 if(!sendMessage(temp))
                     printf("gui tin tu choi thua/moi thatbai!\n");
-                destroyBoard();
+                backToMain(window,window_main);
             break;
         }
     gtk_widget_destroy(dialog);
