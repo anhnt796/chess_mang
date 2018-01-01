@@ -100,6 +100,7 @@ int main(int argc, char *argv[]) {
 
 static void backToMain(GtkWidget *widget, GtkWidget *window_main) {
     g_print("Main menu!\n");
+    destroyBoard();
     gtk_widget_show_all(window_main);
 }
 
@@ -600,8 +601,7 @@ static void xin_hoa_new_dialog()
 {
     GtkWidget *dialog, *label, *content_area, *text_entry, *button, *button2;
     GtkDialogFlags flags;
-    flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
-    gtk_widget_set_size_request(dialog, 250, 200);    
+    flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;  
     dialog = gtk_dialog_new_with_buttons("Xin hoa va choi van moi ?", window,flags,("_OK"),GTK_RESPONSE_ACCEPT,("_KO"),GTK_RESPONSE_REJECT,NULL);
     gint result = gtk_dialog_run (GTK_DIALOG (dialog));
     char temp[10];
