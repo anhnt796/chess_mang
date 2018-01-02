@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
     gtk_main();
     close(newsockfd);
     close(sockfd);
+    close(newsockfd);
     /* Release gtk's global lock */
     gdk_threads_leave();
 

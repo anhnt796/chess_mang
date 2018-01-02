@@ -211,7 +211,6 @@ static void receiveCmd(void *socket)
                         break;
                     case 2: 
                         resetBoard();
-                        play(window_main);
                         break;
                     case 3:
                         destroyBoard();
@@ -375,6 +374,8 @@ static destroyBoard() {
     close(sockfd);
     isReady = 0;
     gtk_widget_destroy(window);
+    close(sockfd);
+    close(newsockfd);
 }
 
 static void xin_hoa_end(){
