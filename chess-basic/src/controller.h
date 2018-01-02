@@ -311,20 +311,7 @@ static void make_server()
         printf("Error creating socket!\n");
         exit(1);
     }
-    printf("Socket created...\n");
-     // Thạch, Get current IP end send to big server
-    char temp[30];
-    char* currentIp = getCurrentIP();
-    strcpy(temp, "HOST  ");
-    strcpy(temp + strlen(temp), currentIp);
-    printf("%s\n",temp);
-    int i = send1MessageToBigServer(temp);
-    close(i);
-    if(i < 0) {
-        printf("Error send message to big Server\n");
-     }
-   
-
+    printf("Socket created...\n");  
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
@@ -337,6 +324,18 @@ static void make_server()
     }
     printf("Binding done...\n");
     printf("Waiting for a connection...\n");
+        // Thạch, Get current IP end send to big server
+    char temp[30];
+    char* currentIp = getCurrentIP();
+    strcpy(temp, "HOST  ");
+    strcpy(temp + strlen(temp), currentIp);
+    printf("%s\n",temp);
+    int i = send1MessageToBigServer(temp);
+    close(i);
+    if(i < 0) {
+        printf("Error send message to big Server\n");
+     }
+
     listen(sockfd, 5);
     len = sizeof(cl_addr);
     newsockfd = accept(sockfd, (struct sockaddr *)&cl_addr, &len);
