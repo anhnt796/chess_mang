@@ -14,7 +14,7 @@
 #define BUF_SIZE 2000
 #define CLADDR_LEN 100
 // Thạch, define server's address
-#define BIG_SERVER "192.168.1.72"
+#define BIG_SERVER "192.168.43.151"
 #define HOST_PORT 3001
 
 int sockfd, ret;
