@@ -6,6 +6,9 @@ static const char *cmd_cnts = "CNTS";
 static const int make_cnts = 2;
 static const char *cmd_cnth = "CNTH";
 static const int make_cnth = 3;
+static const char *cmd_dest = "DEST";
+static const int make_dest = 4;
+
 
 typedef struct
 {
