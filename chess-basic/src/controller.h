@@ -14,7 +14,7 @@
 #define BUF_SIZE 2000
 #define CLADDR_LEN 100
 // Thạch, define server's address
-#define BIG_SERVER "192.168.1.37"
+#define BIG_SERVER "192.168.43.151"
 #define HOST_PORT 3001
 
 int sockfd, ret;
@@ -313,19 +313,6 @@ static void make_server()
         exit(1);
     }
     printf("Socket created...\n");
-     // Thạch, Get current IP end send to big server
-    char temp[30];
-    char* currentIp = getCurrentIP();
-    strcpy(temp, "HOST  ");
-    strcpy(temp + strlen(temp), currentIp);
-    printf("%s\n",temp);
-    int i = send1MessageToBigServer(temp);
-    close(i);
-    if(i < 0) {
-        printf("Error send message to big Server\n");
-     }
-   
-
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
@@ -338,6 +325,18 @@ static void make_server()
     }
     printf("Binding done...\n");
     printf("Waiting for a connection...\n");
+    // Thạch, Get current IP end send to big server
+    char temp[30];
+    char* currentIp = getCurrentIP();
+    strcpy(temp, "HOST  ");
+    strcpy(temp + strlen(temp), currentIp);
+    printf("%s\n",temp);
+    int i = send1MessageToBigServer(temp);
+    close(i);
+    if(i < 0) {
+        printf("Error send message to big Server\n");
+     }
+
     listen(sockfd, 5);
     len = sizeof(cl_addr);
     newsockfd = accept(sockfd, (struct sockaddr *)&cl_addr, &len);
@@ -372,7 +371,8 @@ static void resetBoard(){
 }
 static destroyBoard() {
     char mes[50] = "DEST    ";
-    send1MessageToBigServer(mes);   
+    int a = send1MessageToBigServer(mes);   
+    close(a);
     close(newsockfd); 
     close(sockfd);
     isReady = 0;
