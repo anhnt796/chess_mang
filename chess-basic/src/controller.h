@@ -304,7 +304,15 @@ static void make_client(GtkWindow *parent, gchar *input)
 
 static void make_server()
 {
-    // Thạch, Get current IP end send to big server
+    // khoi tao server
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0)
+    {
+        printf("Error creating socket!\n");
+        exit(1);
+    }
+    printf("Socket created...\n");
+     // Thạch, Get current IP end send to big server
     char temp[30];
     char* currentIp = getCurrentIP();
     strcpy(temp, "HOST  ");
@@ -315,14 +323,7 @@ static void make_server()
     if(i < 0) {
         printf("Error send message to big Server\n");
      }
-    // khoi tao server
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
-    {
-        printf("Error creating socket!\n");
-        exit(1);
-    }
-    printf("Socket created...\n");
+   
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
@@ -344,6 +345,8 @@ static void make_server()
         printf("Error accepting connection!\n");
         exit(1);
     }
+    char mes[50] = "DEST    ";
+    send1MessageToBigServer(mes);   
 
     inet_ntop(AF_INET, &(cl_addr.sin_addr), clientAddr, CLADDR_LEN);
     printf("Connection accepted from %s...\n", clientAddr);
@@ -374,8 +377,6 @@ static destroyBoard() {
     close(sockfd);
     isReady = 0;
     gtk_widget_destroy(window);
-    close(sockfd);
-    close(newsockfd);
 }
 
 static void xin_hoa_end(){
