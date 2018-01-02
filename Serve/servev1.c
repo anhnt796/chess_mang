@@ -218,6 +218,7 @@ int main(int argc, char *argv[])
                     {
                         close(pairs[0].player2.sockfd);
                         close(pairs[0].player1.sockfd);
+                        pairs[0].status = 0;
                     }
                 }
                 break;
