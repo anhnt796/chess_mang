@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder,"test.xml",NULL);
     window_main = GTK_WIDGET(gtk_builder_get_object(builder,"window"));
-    g_signal_connect(window_main,"destroy",G_CALLBACK(gtk_main_quit),NULL);
+    g_signal_connect(window_main,"destroy",G_CALLBACK(quitAndDestroyHost),NULL);
     GtkWidget *button;
 
     //play
@@ -101,8 +101,9 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-static void quitAndDestroyHost(GtkWindow *parent, gchar *message) {
-     
+static void quitAndDestroyHost(GtkWindow *parent) {
+     close(sockfd);
+     close(newsockfd);
     gtk_main_quit();
 }
 
@@ -620,13 +621,15 @@ static void xin_hoa_new_dialog()
                 if(!sendMessage(temp)){
                     printf("chap nhan hoa.moi that bai!\n");
                 }
+                gtk_widget_destroy(dialog);
                 resetBoard();
                 break;
         default:
             printf("ko biet\n");
-        break;
+            gtk_widget_destroy(dialog);
+            break;
     }
-    gtk_widget_destroy(dialog);
+
 }
 
 static void xin_thua_end_dialog()
@@ -635,7 +638,7 @@ static void xin_thua_end_dialog()
     GtkDialogFlags flags;
     flags = GTK_DIALOG_DESTROY_WITH_PARENT;    
     dialog = gtk_dialog_new_with_buttons("Doi thu nhan thua", window,flags,("_OK"),GTK_RESPONSE_NONE,NULL);
-    gint result = gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_widget_show(dialog);
     backToMain(window,window_main);
     gtk_widget_destroy(dialog);
 }
