@@ -39,7 +39,7 @@ void error(const char *msg)
 
 int main(int argc, char *argv[])
 {
-    int i = 0;
+    int i = 0, value;
     int sockfd, newsockfd, portno, player1sockfd, player2sockfd;
     socklen_t clilen;
     char buffer[256], allHost[500];
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
                 {
                     for (int j = i + 1; j < hostNum; j++)
                     {
-                        strcpy(hostArr[i].hostAddress, hostArr[i].hostAddress);
+                        strcpy(hostArr[i].hostAddress, hostArr[j].hostAddress);
                         i++;
                     }
                     hostNum = hostNum - 1;
@@ -104,7 +104,17 @@ int main(int argc, char *argv[])
             }
             break;
         case 1: // declared host
-            if (hostNum < MAX_HOST)
+            value = 0;
+            b = inet_ntoa(cli_addr.sin_addr);
+            for (int i = 0; i < hostNum; i++)
+            {
+                if (strcmp(hostArr[i].hostAddress, b) == 0)
+                {
+                    value = 1;
+                }
+            }
+
+            if (hostNum < MAX_HOST && value == 0)
             {
                 char *a;
                 a = inet_ntoa(cli_addr.sin_addr);
@@ -119,14 +129,16 @@ int main(int argc, char *argv[])
             close(newsockfd);
             break;
         case 3: // connect host
+            memset(&allHost, 0, sizeof(allHost));
             printf("Case 3\n");
             strcpy(allHost, "HOST   ");
             for (int i = 0; i < hostNum; i++)
             {
+                printf("hostarr:  %s\n", hostArr[i].hostAddress);
                 strcpy(allHost + strlen(allHost), hostArr[i].hostAddress);
                 allHost[strlen(allHost)] = ',';
             }
-            allHost[strlen(allHost) - 1] = '\0';
+            allHost[strlen(allHost)] = '\0';
             printf("%s\n", allHost);
             n = write(newsockfd, allHost, strlen(allHost) + 1);
             if (n < 0)

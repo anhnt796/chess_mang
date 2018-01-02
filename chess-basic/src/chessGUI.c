@@ -638,9 +638,15 @@ static void xin_thua_end_dialog()
     GtkDialogFlags flags;
     flags = GTK_DIALOG_DESTROY_WITH_PARENT;    
     dialog = gtk_dialog_new_with_buttons("Doi thu nhan thua", window,flags,("_OK"),GTK_RESPONSE_NONE,NULL);
-    gtk_widget_show(dialog);
-    backToMain(window,window_main);
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+    switch (result)
+    {
+        default:
+                backToMain(window,window_main);
+                break;
+    }
     gtk_widget_destroy(dialog);
+    
 }
 
 static void xin_thua_new_dialog()
