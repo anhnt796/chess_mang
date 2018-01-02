@@ -363,8 +363,6 @@ static void make_server()
 
 static void resetBoard(){
     player = 0;
-    if(!isServer) player_color = 1;
-    else player_color = 0;
     chon_mau_dialog();
     initBoard(board);
     drawGuiBoard(labelBoard, board);
