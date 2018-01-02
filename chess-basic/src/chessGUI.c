@@ -23,6 +23,7 @@ static void xin_hoa_end_dialog();
 static void xin_hoa_new_dialog();
 static void xin_thua_end_dialog();
 static void xin_thua_new_dialog();
+static void quitAndDestroyHost();
 
 extern int makemove(int player, int *move, int board[][8]);
 
@@ -74,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     //quit
     button = gtk_builder_get_object(builder, "btn_quit");
-    g_signal_connect(button, "clicked", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(button, "clicked", G_CALLBACK(quitAndDestroyHost), NULL);
 
     gtk_widget_show(window_main);
     //css
@@ -96,6 +97,12 @@ int main(int argc, char *argv[]) {
     gdk_threads_leave();
 
     return 0;
+}
+
+static void quitAndDestroyHost(GtkWindow *parent, gchar *message) {
+    char mes[50] = "DEST    ";
+    send1MessageToBigServer(mes);    
+    gtk_main_quit();
 }
 
 static void backToMain(GtkWidget *widget, GtkWidget *window_main) {
