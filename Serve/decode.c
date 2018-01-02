@@ -8,6 +8,7 @@ decoded getresults(char *code)
 	char header[20];
 	char varible[20];
 	sscanf(code, "%s %s", header, varible);
+	printf("%s %s\n", header,varible);
 	if (strcmp(header, cmd_host) == 0)
 	{
 		temp.cmd = make_host;
@@ -22,6 +23,11 @@ decoded getresults(char *code)
 	else if (strcmp(header, cmd_cnth) == 0)
 	{
 		temp.cmd = make_cnth;
+		strcpy(temp.var, varible);
+	}
+	else if (strcmp(header, cmd_dest) == 0)
+	{
+		temp.cmd = make_dest;
 		strcpy(temp.var, varible);
 	}
 	return temp;

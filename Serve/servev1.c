@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     int sockfd, newsockfd, portno, player1sockfd, player2sockfd;
     socklen_t clilen;
     char buffer[256], allHost[500];
+    char *b;
     struct sockaddr_in serv_addr, cli_addr;
     Host hostArr[MAX_HOST];
     Pair pairs[3];
@@ -83,12 +84,31 @@ int main(int argc, char *argv[])
         decod = getresults(buffer);
         switch (decod.cmd)
         {
+        case 4:
+            printf("Case 4\n");
+            b = inet_ntoa(cli_addr.sin_addr);
+            printf("%s\n", b);
+            strcpy(hostArr[hostNum].hostAddress, b);
+            for (int i = 0; i < hostNum; i++)
+            {
+                if (strcmp(hostArr[i].hostAddress, b) == 0)
+                {
+                    for (int j = i + 1; j < hostNum; j++)
+                    {
+                        strcpy(hostArr[i].hostAddress, hostArr[i].hostAddress);
+                        i++;
+                    }
+                    hostNum = hostNum - 1;
+                    break;
+                }
+            }
+            break;
         case 1: // declared host
             if (hostNum < MAX_HOST)
             {
-		char *a;
-		a = inet_ntoa(cli_addr.sin_addr);
-		printf("%s\n", a);
+                char *a;
+                a = inet_ntoa(cli_addr.sin_addr);
+                printf("%s\n", a);
                 strcpy(hostArr[hostNum].hostAddress, a);
                 hostNum++;
             }
@@ -96,7 +116,7 @@ int main(int argc, char *argv[])
             {
                 printf("Max host, Can't create host\n");
             }
-            close(newsockfd);            
+            close(newsockfd);
             break;
         case 3: // connect host
             printf("Case 3\n");
@@ -154,7 +174,7 @@ int main(int argc, char *argv[])
                     error("ERROR in new process creation");
                 }
                 if (pid == 0)
-                {                    //child process
+                { //child process
                     close(sockfd);
                     //do whatever you want
                     while (1)

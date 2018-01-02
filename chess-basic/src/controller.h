@@ -69,6 +69,7 @@ static void xin_hoa_new_dialog();
 static void xin_thua_end_dialog();
 static void xin_thua_new_dialog();
 static void backToMain();
+static void chon_mau_dialog();
 static void destroyBoard();
 static void resetBoard();
 static int sendMessage(char*);
@@ -205,7 +206,7 @@ static void receiveCmd(void *socket)
             case 5:
                 switch (temp1.var[0] - '0') {
                     case 0: xin_thua_end_dialog();
-                        break;
+                        break;  
                     case 1: 
                         xin_thua_new_dialog();
                         break;
@@ -361,6 +362,9 @@ static void make_server()
 
 static void resetBoard(){
     player = 0;
+    if(!isServer) player_color = 1;
+    else player_color = 0;
+    chon_mau_dialog();
     initBoard(board);
     drawGuiBoard(labelBoard, board);
     isReady = 1;
@@ -370,7 +374,6 @@ static destroyBoard() {
     send1MessageToBigServer(mes);    
     isReady = 0;
     gtk_widget_destroy(window);
-    backToMain(window,window_main);
 }
 
 static void xin_hoa_end(){
@@ -402,7 +405,6 @@ static void xin_thua_end(){
     }
     else {
         printf("xin thua\n");
-        gtk_widget_destroy(window);
         backToMain(window,window_main);
     }
 }
