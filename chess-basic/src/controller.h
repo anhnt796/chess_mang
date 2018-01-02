@@ -28,7 +28,7 @@ char *serverAddr;
 int clicks = 0;
 int player = 0;
 int player_color;
-int isServer;
+int isServer=0;
 int isReady = 0;
 
 char note[5];
@@ -149,7 +149,7 @@ static int sendMessage(char *temp) {
            ret = sendto(newsockfd,temp, BUF_SIZE, 0, (struct sockaddr *) &cl_addr,len);
            if(ret < 0) {
                 return 0;
-                        }
+                        }   
         }
 
     return 1;
@@ -201,6 +201,7 @@ static void receiveCmd(void *socket)
             case 4:
                 // Thạch
                 player_color = temp1.var[0] - '0';
+                printf("%d %d %d\n",isServer, player, player_color);
                 break;
             case 5:
                 switch (temp1.var[0] - '0') {
@@ -311,7 +312,7 @@ static void make_server()
         printf("Error creating socket!\n");
         exit(1);
     }
-    printf("Socket created...\n");  
+    printf("Socket created...\n");
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
@@ -324,7 +325,7 @@ static void make_server()
     }
     printf("Binding done...\n");
     printf("Waiting for a connection...\n");
-        // Thạch, Get current IP end send to big server
+    // Thạch, Get current IP end send to big server
     char temp[30];
     char* currentIp = getCurrentIP();
     strcpy(temp, "HOST  ");
@@ -362,14 +363,16 @@ static void make_server()
 
 static void resetBoard(){
     player = 0;
-    chon_mau_dialog();
     initBoard(board);
     drawGuiBoard(labelBoard, board);
+    if(!isServer) chon_mau_dialog();
+    printf("%d %d %d\n",isServer, player, player_color);
     isReady = 1;
 }
 static destroyBoard() {
     char mes[50] = "DEST    ";
-    send1MessageToBigServer(mes);   
+    int a = send1MessageToBigServer(mes);   
+    close(a);
     close(newsockfd); 
     close(sockfd);
     isReady = 0;
