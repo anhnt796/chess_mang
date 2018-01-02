@@ -188,7 +188,7 @@ static void receiveCmd(void *socket)
                     case 0: xin_hoa_end_dialog();
                         break;
                     case 1: 
-                        destroyBoard();
+                        backToMain(window,window_main);
                         break;
                     case 2: xin_hoa_new_dialog();
                         break;
@@ -213,7 +213,7 @@ static void receiveCmd(void *socket)
                         resetBoard();
                         break;
                     case 3:
-                        destroyBoard();
+                          backToMain(window,window_main);
                         break;
                     
                 }
