@@ -92,6 +92,7 @@ int main(int argc, char *argv[]) {
     printf("day la socket %d\n", (int)sockfd);
     // make_client(window,"127.0.0.1");
     gtk_main();
+    close(newsockfd);
     close(sockfd);
     /* Release gtk's global lock */
     gdk_threads_leave();
@@ -100,8 +101,7 @@ int main(int argc, char *argv[]) {
 }
 
 static void quitAndDestroyHost(GtkWindow *parent, gchar *message) {
-    char mes[50] = "DEST    ";
-    send1MessageToBigServer(mes);    
+     
     gtk_main_quit();
 }
 

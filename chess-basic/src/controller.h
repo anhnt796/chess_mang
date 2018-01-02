@@ -14,7 +14,7 @@
 #define BUF_SIZE 2000
 #define CLADDR_LEN 100
 // Thạch, define server's address
-#define BIG_SERVER "127.0.0.1"
+#define BIG_SERVER "25.63.175.131"
 #define HOST_PORT 3001
 
 int sockfd, ret;
@@ -193,8 +193,7 @@ static void receiveCmd(void *socket)
                     case 2: xin_hoa_new_dialog();
                         break;
                     case 3:
-                        destroyBoard();
-                        play(window_main);
+                        resetBoard();
                         break;
 
                 }
@@ -211,7 +210,7 @@ static void receiveCmd(void *socket)
                         xin_thua_new_dialog();
                         break;
                     case 2: 
-                        destroyBoard();
+                        resetBoard();
                         play(window_main);
                         break;
                     case 3:
@@ -371,7 +370,9 @@ static void resetBoard(){
 }
 static destroyBoard() {
     char mes[50] = "DEST    ";
-    send1MessageToBigServer(mes);    
+    send1MessageToBigServer(mes);   
+    close(newsockfd); 
+    close(sockfd);
     isReady = 0;
     gtk_widget_destroy(window);
 }
