@@ -93,6 +93,7 @@ int main(int argc, char *argv[]) {
     // make_client(window,"127.0.0.1");
     gtk_main();
     close(sockfd);
+    close(newsockfd);
     /* Release gtk's global lock */
     gdk_threads_leave();
 
