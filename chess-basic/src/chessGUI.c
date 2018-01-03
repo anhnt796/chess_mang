@@ -287,6 +287,19 @@ static void updateGUI()
             printf("Black King is now checked!\n");
         if (!player)
             printf("White King is now checked!\n");
+        if(player == player_color){
+            GtkWidget *dialog, *label, *content_area, *text_entry, *button, *button2;
+            GtkDialogFlags flags;
+            flags = GTK_DIALOG_DESTROY_WITH_PARENT;    
+            dialog = gtk_dialog_new_with_buttons("Ban dang bi chieu !", window,flags,("_OK"),GTK_RESPONSE_NONE,NULL);
+            gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+            switch (result)
+            {
+            default:
+                break;
+            }
+            gtk_widget_destroy(dialog);
+        }
     }
     /* TODO */
 
@@ -298,6 +311,21 @@ static void updateGUI()
                 printf("Black checkmated, white wins!\n");
             if (!player)
                 printf("White checkmated, black wins!\n");
+
+            if(player == player_color){
+            GtkWidget *dialog, *label, *content_area, *text_entry, *button, *button2;
+            GtkDialogFlags flags;
+            flags = GTK_DIALOG_DESTROY_WITH_PARENT;    
+            dialog = gtk_dialog_new_with_buttons("Het co !", window,flags,("_OK"),GTK_RESPONSE_NONE,NULL);
+            gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+            switch (result)
+            {
+            default:
+                break;
+            }
+            gtk_widget_destroy(dialog);
+        }
+
         }
         else
         {
